@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EasyCal Vehicle Finance Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Quicksand', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #cde9ff, #f2faff);
+      color: #333;
+    }
+    header {
+      background: white;
+      display: flex;
+      align-items: center;
+      padding: 20px 40px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 28px;
+      color: #007BFF;
+      position: relative;
+    }
+    .logo::before, .logo::after {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: #007BFF;
+      border-radius: 50%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .logo::before { left: -20px; }
+    .logo::after { right: -20px; }
+    .logo span { animation: bounce 2s infinite; display: inline-block; }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+    .container {
+      max-width: 1100px;
+      margin: 10px auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 0 10px;
+      gap: 10px;
+    }
+    h2 {
+      font-size: 26px;
+      color: #004c99;
+      margin-bottom: 5px;
+      text-align: center;
+      width: 100%;
+    }
+    .tagline {
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+      width: 100%;
+      color: #555;
+    }
+    .card {
+      flex: 1 1 45%;
+      background: white;
+      border-radius: 12px;
+      padding: 15px 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+    }
+    .subtitle {
+      font-weight: 600;
+      font-size: 20px;
+      color: #007BFF;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    label {
+      font-size: 14px;
+      margin-bottom: 4px;
+      display: block;
+    }
+    input, select {
+      width: 100%;
+      padding: 6px 10px;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .calculator {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .calculator input[type="text"] {
+      grid-column: span 4;
+      height: 60px;
+      text-align: right;
+      padding: 10px;
+      font-size: 24px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .calculator button {
+      height: 60px;
+      font-size: 20px;
+      border-radius: 6px;
+      background: #f2f2f2;
+      border: none;
+    }
+    .calculator button:active {
+      background: #ddd;
+    }
+    .calculator .equal {
+      grid-row: span 2;
+      background-color: #007BFF;
+      color: #fff;
+    }
+    .calculator .clear {
+      background-color: #ff6666;
+      color: #fff;
+    }
+    .footer-text {
+      text-align: center;
+      margin-top: 40px;
+      padding: 0px;
+      color: #333;
+      font-size: 14px;
+    }
+    .chart-container {
+      width: 10%;
+      margin-top: 20px;
+    }
+    canvas {
+      width: 100% !important;
+      max-width: 500px;
+      margin: auto;
+      display: block;
+    }
+    @media (max-width: 768px) {
+      .card {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><span>EasyCal</span></div>
+  </header>
+  <div class="container">
+    <h2>Your Vehicle Calculator</h2>
+    <div class="tagline">Discover the full cost of car ownership—fuel, finance, and more.</div>
+
+    <div class="card">
+      <div class="subtitle">Monthly Running Costs</div>
+      <label for="currency">Currency:</label>
+      <select id="currency">
+        <option value="R" selected>South African Rand (R)</option>
+        <option value="$">US Dollar ($)</option>
+        <option value="£">British Pound (£)</option>
+        <option value="€">Euro (€)</option>
+        <option value="₦">Nigerian Naira (₦)</option>
+        <option value="KSh">Kenyan Shilling (KSh)</option>
+        <option value="GHC">Ghanaian Cedi (GHC)</option>
+        <option value="TZS">Tanzanian Shilling (TZS)</option>
+      </select>
+      <label>Monthly Instalment:</label>
+      <input type="number" id="instalment" placeholder="Enter amount">
+      <label>Fuel Cost:</label>
+      <input type="number" id="fuel" placeholder="Enter amount">
+      <label>Insurance:</label>
+      <input type="number" id="insurance" placeholder="Enter amount">
+      <label>Service Cost:</label>
+      <input type="number" id="service" placeholder="Enter amount">
+      <label>Car Wash:</label>
+      <input type="number" id="carWash" placeholder="Enter amount">
+      <label>Annual License Disc Renewal:</label>
+      <input type="number" id="license" placeholder="Enter annual amount">
+      <button onclick="calculateTotal()">Calculate Total</button>
+      <div class="result" id="totalCost"></div>
+      <div class="chart-container">
+        <canvas id="costChart"></canvas>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="subtitle">Quick Calculator</div>
+      <div class="calculator">
+        <input type="text" id="calc-display" disabled>
+        <button onclick="appendCalc('C')" class="clear">C</button>
+        <button onclick="appendCalc('%')">%</button>
+        <button onclick="appendCalc('/')">÷</button>
+        <button onclick="appendCalc('*')">×</button>
+        <button onclick="appendCalc('7')">7</button>
+        <button onclick="appendCalc('8')">8</button>
+        <button onclick="appendCalc('9')">9</button>
+        <button onclick="appendCalc('-')">−</button>
+        <button onclick="appendCalc('4')">4</button>
+        <button onclick="appendCalc('5')">5</button>
+        <button onclick="appendCalc('6')">6</button>
+        <button onclick="appendCalc('+')">+</button>
+        <button onclick="appendCalc('1')">1</button>
+        <button onclick="appendCalc('2')">2</button>
+        <button onclick="appendCalc('3')">3</button>
+        <button onclick="calculateExpression()" class="equal">=</button>
+        <button style="grid-column: span 2" onclick="appendCalc('0')">0</button>
+        <button onclick="appendCalc('.')">.</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    function calculateTotal() {
+      const currency = document.getElementById('currency').value;
+      const instalment = parseFloat(document.getElementById('instalment').value) || 0;
+      const fuel = parseFloat(document.getElementById('fuel').value) || 0;
+      const insurance = parseFloat(document.getElementById('insurance').value) || 0;
+      const service = parseFloat(document.getElementById('service').value) || 0;
+      const carWash = parseFloat(document.getElementById('carWash').value) || 0;
+      const license = parseFloat(document.getElementById('license').value) || 0;
+
+      const monthlyLicenseCost = license / 12;
+      const totalCost = instalment + fuel + insurance + service + carWash + monthlyLicenseCost;
+
+      document.getElementById('totalCost').innerHTML = `Total Monthly Cost: ${currency}${totalCost.toFixed(2)}`;
+      updateChart([instalment, fuel, insurance, service, carWash, monthlyLicenseCost]);
+    }
+
+    let calcDisplay = document.getElementById('calc-display');
+    let calcExpression = '';
+
+    function appendCalc(value) {
+      if (value === 'C') {
+        clearCalc();
+        return;
+      }
+      calcExpression += value;
+      calcDisplay.value = calcExpression;
+    }
+
+    function calculateExpression() {
+      try {
+        calcExpression = eval(calcExpression).toString();
+        calcDisplay.value = calcExpression;
+      } catch (e) {
+        calcDisplay.value = 'Error';
+      }
+    }
+
+    function clearCalc() {
+      calcExpression = '';
+      calcDisplay.value = '';
+    }
+
+    let costChart;
+    function updateChart(values) {
+      const ctx = document.getElementById('costChart').getContext('2d');
+      if (costChart) costChart.destroy();
+      costChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Instalment', 'Fuel', 'Insurance', 'Service', 'Car Wash', 'License'],
+          datasets: [{
+            label: 'Cost Breakdown',
+            data: values,
+            backgroundColor: ['#007BFF', '#66ccff', '#99ddff', '#cceeff', '#aaccee', '#88bbcc'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+  </script>
+  </div>
+  <div class="footer-text">
+    Thank you for using this platform, please share with your friends.<br><br>
+    &copy; 2025 Hendrick Jali
+  </div>
+</body>
+</html>
