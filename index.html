@@ -51,7 +51,7 @@
       flex-wrap: wrap;
       justify-content: space-between;
       padding: 0 10px;
-      gap: 20px;
+      gap: 10px;
     }
     h2 {
       font-size: 26px;
@@ -71,7 +71,7 @@
       flex: 1 1 45%;
       background: white;
       border-radius: 12px;
-      padding: 15px 10px;
+      padding: 10px 10px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
     }
     .subtitle {
@@ -118,12 +118,12 @@
     .calculator {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: 6.5px;
       margin-top: 20px;
     }
     .calculator input[type="text"] {
       grid-column: span 4;
-      height: 60px;
+      height: 50px;
       text-align: right;
       padding: 10px;
       font-size: 24px;
@@ -132,17 +132,18 @@
       color: #8b8b8b;
     }
     .calculator button {
-      height: 60px;
+      height: 50px;
       font-size: 20px;
       border-radius: 6px;
       background: #8b8b8b;
       border: none;
+      
     }
     .calculator button:active {
       background: #ddd;
     }
     .calculator .equal {
-      grid-row: span 2;
+      grid-row: span 1;
       background-color: #007BFF;
       color: #fff;
     }
@@ -152,7 +153,7 @@
     }
     .footer-text {
       text-align: center;
-      margin-top: 40px;
+      margin-top: 40px;           
       padding: 0px;
       color: #333;
       font-size: 14px;
@@ -179,8 +180,8 @@
     <div class="logo"><span>EasyCal</span></div>
   </header>
   <div class="container">
-    <h2>Your Vehicle Calculator</h2>
-    <div class="tagline">Discover the full cost of car ownership—fuel, finance, and more.</div>
+    <h2>Your Vehicle Finance Calculator</h2>
+    <div class="tagline">Buying a car is not only about installments, but monthly running costs your car financer will never tell you about. <br> Budget better using <strong>EasyCal</strong></div>
 
     <div class="card">
       <div class="subtitle">Monthly Running Costs</div>
@@ -201,11 +202,11 @@
       <input type="number" id="fuel" placeholder="Enter amount">
       <label>Insurance:</label>
       <input type="number" id="insurance" placeholder="Enter amount">
-      <label>Car Service Monthly Cost: <i><strong>(Divide annual by 12)</strong></i></label>
+      <label>Service Cost:</label>
       <input type="number" id="service" placeholder="Enter amount">
       <label>Car Wash:</label>
       <input type="number" id="carWash" placeholder="Enter amount">
-      <label>Annual License Disc Renewal:<i><strong>(Divide annual by 12)</strong></i></label>
+      <label>Annual License Disc Renewal:</label>
       <input type="number" id="license" placeholder="Enter annual amount">
       <button onclick="calculateTotal()">Calculate Total</button>
       <div class="result" id="totalCost"></div>
@@ -233,10 +234,18 @@
         <button onclick="appendCalc('1')">1</button>
         <button onclick="appendCalc('2')">2</button>
         <button onclick="appendCalc('3')">3</button>
-        <button onclick="calculateExpression()" class="equal">=</button>
-        <button style="grid-column: span 2" onclick="appendCalc('0')">0</button>
         <button onclick="appendCalc('.')">.</button>
+        <button onclick="appendCalc('0')">0</button>
+        <button style="grid-column: span 3" onclick="calculateExpression()" class="equal">=</button>
+
       </div>
+      <br>
+      <div style="margin-right: 10px; text-align: center;">
+        <p>Have feedback or suggestions?</p>
+        <a href="https://forms.gle/GJ61uttw8gLZ2Rrs5" target="_blank">
+          <button>Leave Feedback</button>
+        </a>
+      </div>    
     </div>
   </div>
   <script>
@@ -276,6 +285,13 @@
         calcDisplay.value = 'Error';
       }
     }
+
+document.querySelector('#calculateBtn').addEventListener('click', () => {
+  gtag('event', 'calculate_clicked', {
+    event_category: 'Calculator',
+    event_label: 'Main Calc'
+  });
+});
 
     function clearCalc() {
       calcExpression = '';
