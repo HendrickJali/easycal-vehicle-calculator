@@ -1,333 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <title>EasyCal Vehicle Finance Calculator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      font-family: 'Quicksand', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(to bottom, #cde9ff, #f2faff);
-      color: #333;
-    }
-    header {
-      background: white;
-      display: flex;
-      align-items: center;
-      padding: 20px 40px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    }
-    .logo {
-      font-weight: 700;
-      font-size: 28px;
-      color: #007BFF;
-      position: relative;
-    }
-    .logo::before, .logo::after {
-      content: '';
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      background: #007BFF;
-      border-radius: 50%;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-    .logo::before { left: -20px; }
-    .logo::after { right: -20px; }
-    .logo span { animation: bounce 2s infinite; display: inline-block; }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-5px); }
-    }
-    .container {
-      max-width: 1100px;
-      margin: 10px auto;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      padding: 0 10px;
-      gap: 10px;
-    }
-    h2 {
-      font-size: 26px;
-      color: #004c99;
-      margin-bottom: 5px;
-      text-align: center;
-      width: 100%;
-    }
-    .tagline {
-      font-size: 16px;
-      text-align: center;
-      margin-bottom: 20px;
-      width: 100%;
-      color: #555;
-    }
-    .card {
-      flex: 1 1 45%;
-      background: white;
-      border-radius: 12px;
-      padding: 10px 10px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
-    }
-    .subtitle {
-      font-weight: 600;
-      font-size: 20px;
-      color: #007BFF;
-      margin-bottom: 15px;
-      text-align: center;
-    }
-    label {
-      font-size: 14px;
-      margin-bottom: 4px;
-      display: block;
-    }
-    input, select {
-      width: 100%;
-      padding: 6px 10px;
-      box-sizing: border-box;
-      margin-bottom: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 15px;
-      transition: background 0.3s;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    .result {
-      margin-top: 10px;
-      text-align: center;
-      font-size: 17px;
-      font-weight: 600;
-    }
-    .calculator {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6.5px;
-      margin-top: 20px;
-    }
-    .calculator input[type="text"] {
-      grid-column: span 4;
-      height: 50px;
-      text-align: right;
-      padding: 10px;
-      font-size: 24px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      color: #8b8b8b;
-    }
-    .calculator button {
-      height: 50px;
-      font-size: 20px;
-      border-radius: 6px;
-      background: #8b8b8b;
-      border: none;
-      
-    }
-    .calculator button:active {
-      background: #ddd;
-    }
-    .calculator .equal {
-      grid-row: span 1;
-      background-color: #007BFF;
-      color: #fff;
-    }
-    .calculator .clear {
-      background-color: #ff6666;
-      color: #fff;
-    }
-    .footer-text {
-      text-align: center;
-      margin-top: 40px;           
-      padding: 0px;
-      color: #333;
-      font-size: 14px;
-    }
-    .chart-container {
-      width: 10%;
-      margin-top: 20px;
-    }
-    canvas {
-      width: 100% !important;
-      max-width: 500px;
-      margin: auto;
-      display: block;
-    }
-    @media (max-width: 768px) {
-      .card {
-        flex: 1 1 100%;
-      }
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="logo"><span>EasyCal</span></div>
-  </header>
-  <div class="container">
-    <h2>Your Vehicle Finance Calculator</h2>
-    <div class="tagline">Buying a car is not only about installments, but monthly running costs. Your bank will never tell you this. Budget better using <strong>EasyCal</strong></div>
-
-    <div class="card">
-      <div class="subtitle">Monthly Running Costs</div>
-      <label for="currency">Currency:</label>
-      <select id="currency">
-        <option value="R" selected>South African Rand (R)</option>
-        <option value="$">US Dollar ($)</option>
-        <option value="£">British Pound (£)</option>
-        <option value="€">Euro (€)</option>
-        <option value="₦">Nigerian Naira (₦)</option>
-        <option value="KSh">Kenyan Shilling (KSh)</option>
-        <option value="GHC">Ghanaian Cedi (GHC)</option>
-        <option value="TZS">Tanzanian Shilling (TZS)</option>
-      </select>
-      <label>Monthly Instalment:</label>
-      <input type="number" id="instalment" placeholder="Enter amount">
-      <label>Fuel Cost:</label>
-      <input type="number" id="fuel" placeholder="Enter amount">
-      <label>Insurance:</label>
-      <input type="number" id="insurance" placeholder="Enter amount">
-      <label>Service Cost:</label>
-      <input type="number" id="service" placeholder="Enter amount">
-      <label>Car Wash:</label>
-      <input type="number" id="carWash" placeholder="Enter amount">
-      <label>Annual License Disc Renewal:</label>
-      <input type="number" id="license" placeholder="Enter annual amount">
-      <button onclick="calculateTotal()">Calculate Total</button>
-      <div class="result" id="totalCost"></div>
-      <div class="chart-container">
-        <canvas id="costChart"></canvas>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="subtitle">Quick Calculator</div>
-      <div class="calculator">
-        <input type="text" id="calc-display" disabled>
-        <button onclick="appendCalc('C')" class="clear">C</button>
-        <button onclick="appendCalc('%')">%</button>
-        <button onclick="appendCalc('/')">÷</button>
-        <button onclick="appendCalc('*')">×</button>
-        <button onclick="appendCalc('7')">7</button>
-        <button onclick="appendCalc('8')">8</button>
-        <button onclick="appendCalc('9')">9</button>
-        <button onclick="appendCalc('-')">−</button>
-        <button onclick="appendCalc('4')">4</button>
-        <button onclick="appendCalc('5')">5</button>
-        <button onclick="appendCalc('6')">6</button>
-        <button onclick="appendCalc('+')">+</button>
-        <button onclick="appendCalc('1')">1</button>
-        <button onclick="appendCalc('2')">2</button>
-        <button onclick="appendCalc('3')">3</button>
-        <button onclick="appendCalc('.')">.</button>
-        <button onclick="appendCalc('0')">0</button>
-        <button style="grid-column: span 3" onclick="calculateExpression()" class="equal">=</button>
-
-      </div>
-      <br>
-      <div style="margin-right: 10px; text-align: center;">
-        <p>Have feedback or suggestions?</p>
-        <a href="https://forms.gle/GJ61uttw8gLZ2Rrs5" target="_blank">
-          <button>Leave Feedback</button>
-        </a>
-      </div>    
-    </div>
-  </div>
-  <script>
-    function calculateTotal() {
-      const currency = document.getElementById('currency').value;
-      const instalment = parseFloat(document.getElementById('instalment').value) || 0;
-      const fuel = parseFloat(document.getElementById('fuel').value) || 0;
-      const insurance = parseFloat(document.getElementById('insurance').value) || 0;
-      const service = parseFloat(document.getElementById('service').value) || 0;
-      const carWash = parseFloat(document.getElementById('carWash').value) || 0;
-      const license = parseFloat(document.getElementById('license').value) || 0;
-
-      const monthlyLicenseCost = license / 12;
-      const totalCost = instalment + fuel + insurance + service + carWash + monthlyLicenseCost;
-
-      document.getElementById('totalCost').innerHTML = `Total Monthly Cost: ${currency}${totalCost.toFixed(2)}`;
-      updateChart([instalment, fuel, insurance, service, carWash, monthlyLicenseCost]);
-    }
-
-    let calcDisplay = document.getElementById('calc-display');
-    let calcExpression = '';
-
-    function appendCalc(value) {
-      if (value === 'C') {
-        clearCalc();
-        return;
-      }
-      calcExpression += value;
-      calcDisplay.value = calcExpression;
-    }
-
-    function calculateExpression() {
-      try {
-        calcExpression = eval(calcExpression).toString();
-        calcDisplay.value = calcExpression;
-      } catch (e) {
-        calcDisplay.value = 'Error';
-      }
-    }
-
-document.querySelector('#calculateBtn').addEventListener('click', () => {
-  gtag('event', 'calculate_clicked', {
-    event_category: 'Calculator',
-    event_label: 'Main Calc'
-  });
-});
-
-    function clearCalc() {
-      calcExpression = '';
-      calcDisplay.value = '';
-    }
-
-    let costChart;
-    function updateChart(values) {
-      const ctx = document.getElementById('costChart').getContext('2d');
-      if (costChart) costChart.destroy();
-      costChart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Instalment', 'Fuel', 'Insurance', 'Service', 'Car Wash', 'License'],
-          datasets: [{
-            label: 'Cost Breakdown',
-            data: values,
-            backgroundColor: ['#007BFF', '#66ccff', '#99ddff', '#cceeff', '#aaccee', '#88bbcc'],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'bottom'
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyCal - Smart Vehicle Cost Advisor</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for Inter font and custom colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#1e40af', // Darker Blue for accents
+                        'secondary-blue': '#3b82f6', // Light Blue for buttons/highlights
+                        'light-bg': '#f3f4f6', // Light gray background
+                        'card-bg': '#ffffff', // White card background
+                        'success-green': '#10b981',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02)',
+                        'lg-blue': '0 10px 15px -3px rgba(59, 130, 246, 0.3), 0 4px 6px -2px rgba(59, 130, 246, 0.15)',
+                    }
+                }
             }
-          }
         }
-      });
-    }
-  </script>
-  </div>
-  <div class="footer-text">
-    Thank you for using this platform, please share with your friends.<br><br>
-    &copy; 2025 Hendrick Jali
-  </div>
+    </script>
+    <style>
+        /* Ensure font is loaded */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        /* Custom styling for the main gradient background */
+        body {
+            background: linear-gradient(180deg, #f3f4f6 0%, #dbeafe 100%);
+            min-height: 100vh;
+        }
+        /* Custom scrollbar for a clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800">
+
+    <!-- Header / Navigation -->
+    <header class="bg-primary-blue shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="text-2xl font-extrabold text-white tracking-wider">
+                <span class="text-secondary-blue">Easy</span>Cal
+            </div>
+            <nav class="hidden md:flex space-x-6 text-sm">
+                <a href="#" class="text-white hover:text-secondary-blue transition duration-150">How It Works</a>
+                <a href="#" class="text-white hover:text-secondary-blue transition duration-150">Blog</a>
+                <button class="bg-secondary-blue hover:bg-sky-500 text-white font-semibold py-2 px-4 rounded-full transition duration-150 shadow-soft">
+                    Get Insurance Quotes
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-center text-primary-blue mb-4">
+            Calculate Your Total Vehicle Cost
+        </h1>
+        <p class="text-lg text-center text-gray-600 mb-12">
+            Don't just budget, see. EasyCal helps you save and plan with confidence.
+        </p>
+
+        <!-- Main Calculator Grid -->
+        <div class="grid lg:grid-cols-3 gap-8">
+
+            <!-- Left Column: Inputs -->
+            <div class="lg:col-span-2 bg-white p-6 sm:p-8 rounded-xl shadow-2xl transition duration-300 hover:shadow-lg-blue">
+                <h2 class="text-2xl font-bold text-primary-blue border-b pb-3 mb-6">Monthly Running Costs</h2>
+
+                <form id="cost-form" class="space-y-6">
+                    <!-- Input fields -->
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <label for="installment" class="block">
+                            <span class="text-sm font-medium text-gray-700">Monthly Instalment (R)</span>
+                            <input type="number" id="installment" placeholder="e.g. 5000" min="0" value="5000" class="mt-1 block w-full rounded-lg border-gray-300 shadow-soft p-3 focus:border-secondary-blue focus:ring-secondary-blue transition" required>
+                        </label>
+
+                        <label for="fuel" class="block">
+                            <span class="text-sm font-medium text-gray-700">Fuel Cost (Monthly Avg. R)</span>
+                            <input type="number" id="fuel" placeholder="e.g. 2500" min="0" value="2500" class="mt-1 block w-full rounded-lg border-gray-300 shadow-soft p-3 focus:border-secondary-blue focus:ring-secondary-blue transition" required>
+                        </label>
+
+                        <label for="insurance" class="block">
+                            <span class="text-sm font-medium text-gray-700">Insurance (Monthly Avg. R)</span>
+                            <input type="number" id="insurance" placeholder="e.g. 1200" min="0" value="1200" class="mt-1 block w-full rounded-lg border-gray-300 shadow-soft p-3 focus:border-secondary-blue focus:ring-secondary-blue transition" required>
+                        </label>
+
+                        <!-- NEW FIELD: Tracker Fees -->
+                        <label for="tracker-fees" class="block">
+                            <span class="text-sm font-medium text-gray-700">Tracker Fees (Monthly Avg. R)</span>
+                            <input type="number" id="tracker-fees" placeholder="e.g. 150 (Optional)" min="0" value="150" class="mt-1 block w-full rounded-lg border-gray-300 shadow-soft p-3 focus:border-secondary-blue focus:ring-secondary-blue transition">
+                        </label>
+                        <!-- END NEW FIELD -->
+
+                        <label for="maintenance" class="block">
+                            <span class="text-sm font-medium text-gray-700">Service & Maintenance (Monthly Avg. R)</span>
+                            <input type="number" id="maintenance" placeholder="e.g. 800" min="0" value="800" class="mt-1 block w-full rounded-lg border-gray-300 shadow-soft p-3 focus:border-secondary-blue focus:ring-secondary-blue transition" required>
+                        </label>
+                    </div>
+
+                    <h3 class="text-xl font-semibold text-gray-700 pt-4">Other Annual Costs (Calculated Monthly)</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <label for="license-renewal" class="block">
+                            <span class="text-sm font-medium text-gray-700">Annual License Disc Renewal (R)</span>
+                            <input type="number" id="license-renewal" placeholder="e.g. 500" min="0" value="500" class="mt-1 block w-full rounded-lg border-gray-300 shadow-soft p-3 focus:border-secondary-blue focus:ring-secondary-blue transition" required>
+                        </label>
+
+                        <label for="car-wash" class="block">
+                            <span class="text-sm font-medium text-gray-700">Car Wash / Cleaning (Monthly Avg. R)</span>
+                            <input type="number" id="car-wash" placeholder="e.g. 200 (Optional)" min="0" value="200" class="mt-1 block w-full rounded-lg border-gray-300 shadow-soft p-3 focus:border-secondary-blue focus:ring-secondary-blue transition">
+                        </label>
+                    </div>
+                    
+                    <!-- Calculate Button -->
+                    <button type="submit" class="w-full bg-secondary-blue hover:bg-primary-blue text-white font-extrabold py-4 rounded-xl shadow-lg mt-8 transition duration-200 uppercase tracking-wide">
+                        Calculate Total Costs
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right Column: Results & Affiliate Zone -->
+            <div class="lg:col-span-1 space-y-8">
+                
+                <!-- Results Card -->
+                <div class="bg-card-bg p-6 rounded-xl shadow-2xl border-t-4 border-success-green">
+                    <h2 class="text-xl font-bold text-gray-700 mb-4">Total Cost & Savings</h2>
+                    <div class="flex flex-col items-center">
+                        <p class="text-sm text-gray-500 uppercase">Estimated Monthly Cost</p>
+                        <p id="monthly-cost" class="text-5xl font-extrabold text-success-green my-2 transition duration-500 ease-in-out">R 0</p>
+                        <p class="text-lg text-gray-500">
+                            <span class="font-semibold text-primary-blue">Annual Cost: </span><span id="annual-cost">R 0</span>
+                        </p>
+                    </div>
+                    <div id="tip-message" class="mt-4 text-center text-sm text-gray-500 italic">Enter your details and click 'Calculate'</div>
+                </div>
+
+                <!-- Affiliate Zone -->
+                <div class="bg-card-bg p-6 rounded-xl shadow-2xl border-t-4 border-secondary-blue">
+                    <h2 class="text-xl font-bold text-gray-700 mb-4">Insurance Quotes & Savings</h2>
+                    <p class="text-sm text-gray-600 mb-4">Compare and save on your monthly insurance premium through our partners.</p>
+
+                    <div class="space-y-4">
+                        <!-- Hippo Affiliate Card -->
+                        <div class="border rounded-lg p-3 flex items-center justify-between shadow-soft hover:shadow-md transition duration-150">
+                            <div class="flex items-center">
+                                <!-- Placeholder for Hippo Logo -->
+                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                    <span class="text-xl">🦛</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-800">Hippo.co.za</p>
+                                    <p class="text-xs text-gray-500">Compare & save instantly</p>
+                                </div>
+                            </div>
+                            <!-- LINK MODIFIED WITH PROMO CODE -->
+                            <a href="https://www.hippo.co.za/?promo_code=EASYCAL_PROMO" target="_blank" class="bg-primary-blue hover:bg-secondary-blue text-white text-sm font-medium py-2 px-3 rounded-lg transition duration-150">
+                                Get Quotes
+                            </a>
+                        </div>
+
+                        <!-- King Price Affiliate Card -->
+                        <div class="border rounded-lg p-3 flex items-center justify-between shadow-soft hover:shadow-md transition duration-150">
+                            <div class="flex items-center">
+                                <!-- Placeholder for King Price Logo -->
+                                <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                                    <span class="text-xl">👑</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-800">King Price Insurance</p>
+                                    <p class="text-xs text-gray-500">Save up to 33%</p>
+                                </div>
+                            </div>
+                            <!-- LINK MODIFIED WITH PROMO CODE -->
+                            <a href="https://www.kingprice.co.za/?affiliate=EASYCAL_PROMO" target="_blank" class="bg-primary-blue hover:bg-secondary-blue text-white text-sm font-medium py-2 px-3 rounded-lg transition duration-150">
+                                Get Quotes
+                            </a>
+                        </div>
+
+                        <!-- Santam Affiliate Card (Example) -->
+                        <div class="border rounded-lg p-3 flex items-center justify-between shadow-soft hover:shadow-md transition duration-150">
+                            <div class="flex items-center">
+                                <!-- Placeholder for Santam Logo -->
+                                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3">
+                                    <span class="text-xl">🛡️</span>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-gray-800">Santam</p>
+                                    <p class="text-xs text-gray-500">Comprehensive Cover</p>
+                                </div>
+                            </div>
+                            <!-- LINK MODIFIED WITH PROMO CODE -->
+                            <a href="https://www.santam.co.za/?source=EASYCAL_PROMO" target="_blank" class="bg-primary-blue hover:bg-secondary-blue text-white text-sm font-medium py-2 px-3 rounded-lg transition duration-150">
+                                Get Quotes
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-xs text-gray-500 text-center">
+                        *We may earn a commission from our insurance partners.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row justify-center sm:justify-between items-center text-sm text-gray-500">
+            <p>&copy; 2025 EasyCal. All rights reserved.</p>
+            <div class="flex space-x-4 mt-3 sm:mt-0">
+                <a href="#" class="hover:text-primary-blue">About Us</a>
+                <a href="#" class="hover:text-primary-blue">Terms & Privacy</a>
+                <a href="#" class="hover:text-primary-blue">Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('cost-form');
+            const monthlyCostDisplay = document.getElementById('monthly-cost');
+            const annualCostDisplay = document.getElementById('annual-cost');
+            const tipMessage = document.getElementById('tip-message');
+
+            /**
+             * Calculates the total monthly and annual vehicle running costs.
+             * @param {Event} event - The form submission event.
+             */
+            const calculateCosts = (event) => {
+                event.preventDefault();
+
+                // Helper to safely get number value from input, defaulting to 0
+                const getInputValue = (id) => {
+                    const input = document.getElementById(id).value;
+                    // Use parseFloat to handle decimal input and default to 0 if NaN or empty
+                    return parseFloat(input) || 0;
+                };
+
+                // Monthly Costs
+                const installment = getInputValue('installment');
+                const fuel = getInputValue('fuel');
+                const insurance = getInputValue('insurance');
+                const trackerFees = getInputValue('tracker-fees');
+                const maintenance = getInputValue('maintenance');
+                const carWash = getInputValue('car-wash'); // Optional
+
+                // Annual Costs that need to be spread monthly
+                const licenseRenewal = getInputValue('license-renewal');
+                
+                // Calculate Monthly Share of Annual Costs
+                const annualToMonthly = licenseRenewal / 12;
+
+                // Total Monthly Cost Calculation
+                const totalMonthlyCost = installment + fuel + insurance + trackerFees + maintenance + carWash + annualToMonthly;
+                const totalAnnualCost = totalMonthlyCost * 12;
+
+                // Format and Update the UI
+                const formatRands = (amount) => {
+                    return `R ${Math.round(amount).toLocaleString('en-ZA')}`;
+                };
+
+                monthlyCostDisplay.textContent = formatRands(totalMonthlyCost);
+                annualCostDisplay.textContent = formatRands(totalAnnualCost);
+                tipMessage.textContent = 'Results are based on your monthly average inputs.';
+
+                console.log(`Monthly Cost: ${totalMonthlyCost}`);
+                console.log(`Annual Cost: ${totalAnnualCost}`);
+            };
+
+            // Attach the event listener to the form submission
+            form.addEventListener('submit', calculateCosts);
+
+            // Run initial calculation with default values on load
+            calculateCosts({ preventDefault: () => {} });
+        });
+    </script>
 </body>
 </html>
